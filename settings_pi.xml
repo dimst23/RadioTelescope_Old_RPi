@@ -1,0 +1,5 @@
+<settings>
+    <TCP>
+        <port>10001</port>
+    </TCP>
+</settings>
