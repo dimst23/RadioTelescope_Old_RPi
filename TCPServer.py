@@ -7,8 +7,8 @@ class TCPServer(object):
         self.sock = self.createSocket()
     
     def createSocket(self):
-        #hostname = socket.gethostname() #Get the hostname of the machine
-        hostname = "localhost"
+        hostname = socket.gethostname() #Get the hostname of the machine
+        #hostname = "192.168.2.10"
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #Create a socket
         sock.bind((hostname, int(self.port))) #Bind to the socket
         sock.listen(1) #Set the listening to one connection
