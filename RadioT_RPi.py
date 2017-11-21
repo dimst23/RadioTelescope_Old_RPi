@@ -1,8 +1,10 @@
+#!/usr/bin/env python3.5
+
 #Import the required libraries and classes
 from TCPServer import TCPServer
 from configData_Pi import confDataPi
 from requestHandler import requestHandle
-#from motorDriver import motor
+from motorDriver import motor
 
 def main():
     cfg = confDataPi("settings_pi.xml")
@@ -10,7 +12,8 @@ def main():
     request_hndl = requestHandle()
     con_client = False
     result = "none"
-    #motor.GPIOInit() #Initialize the GPIO pins on the Raspberry
+    
+    motor.GPIOInit() #Initialize the GPIO pins on the Raspberry
     
     while(True):
         if con_client == False:

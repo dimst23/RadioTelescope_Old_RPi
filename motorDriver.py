@@ -51,8 +51,8 @@ class motor(object):
         time.sleep(delay)
         setStep(0, 0, 0, 1)
         time.sleep(delay)
-        setStep(1, 0, 0, 0)
-        time.sleep(delay)
+        #setStep(1, 0, 0, 0)
+        #time.sleep(delay)
     
     def full_step_bckwd(self, delay, RA_motor):
         setStep(1, 0, 0, 0)
@@ -63,8 +63,8 @@ class motor(object):
         time.sleep(delay)
         setStep(0, 1, 0, 0)
         time.sleep(delay)
-        setStep(1, 0, 0, 0)
-        time.sleep(delay)
+        #setStep(1, 0, 0, 0)
+        #time.sleep(delay)
     
     def half_step_fwd(self, delay, RA_motor):
         setStep(1, 0, 0, 0)
