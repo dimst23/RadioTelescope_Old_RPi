@@ -11,7 +11,7 @@ class TCPServer(object):
         sck = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sck.connect( ("8.8.8.8", 80) )
         hostname = sck.getsockname()[0] #Get the local ip returned
-        sck.close()
+        sck.close() #Release the socket created for getting the local IP
         #hostname = socket.gethostname() #Get the hostname of the machine
         #hostname = "192.168.2.10"
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #Create a socket

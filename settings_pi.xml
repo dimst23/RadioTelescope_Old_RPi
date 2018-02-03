@@ -2,4 +2,8 @@
     <TCP>
         <port>10001</port>
     </TCP>
+    <Steps>
+        <RA>0.0</RA>
+        <DEC>0.0</DEC>
+    </Steps>
 </settings>

@@ -33,11 +33,12 @@ class confDataPi(object):
             else:
                 continue
     
-    def getHost(self):
-        return self.getConfig("TCP", "host")
+    def getSteps(self):
+        return [float(self.getConfig("Steps", "RA")), float(self.getConfig("Steps", "DEC"))]
         
-    def setHost(self, host):
-        self.setConfig("TCP", "host", host)
+    def setSteps(self, m_steps):
+        self.setConfig("Steps", "RA", float(m_steps[0]))
+        self.setConfig("Steps", "DEC", float(m_steps[1]))
     
     def getPort(self):
         return self.getConfig("TCP", "port")
