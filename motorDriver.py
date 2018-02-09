@@ -26,8 +26,8 @@ class motor(object):
             GPIO.output(7, c1)
             GPIO.output(11, c2)
         else:
-            GPIO.output(12, c3)
-            GPIO.output(13, c4)
+            GPIO.output(12, c1)
+            GPIO.output(13, c2)
     
     def stepping_fwd(self, delay, steps, RA_motor):
         j = 0 #Initialize the indexing variable
@@ -40,31 +40,17 @@ class motor(object):
             step = step + 1
             j = 0 if j == 3 else j
         thr.done = True #Indicate when we are done
+        return True
     
     def stepping_bckwd(self, delay, steps, RA_motor):
         j = 0 #Initialize the indexing variable
         step = 0
         thr = threading.currentThread()
         while getattr(thr, "run", True) and (step < steps):
-            self.setStep(_steps[3 - j][0], _steps[3 - j][1], RA_motor)
+            self.setStep(_steps[2 - j][0], _steps[2 - j][1], RA_motor)
             time.sleep(delay)
             j = j + 1
             step = step + 1
             j = 0 if j == 3 else j
         thr.done = True #Indicate when we are done
-    
-    #def RA_left(self, steps):
-        
-    
-    
-    #def RA_right(self, steps):
-        
-    
-    
-    #def DEC_up(self, steps):
-        
-    
-    
-    #def DEC_down(self, steps):
-        
-    
+        return True
