@@ -1,19 +1,20 @@
 #!/usr/bin/env python3.5
 
 #Import the required libraries and classes
-from TCPServer import TCPServer
-from configData_Pi import confDataPi
-from requestHandler import requestHandle
-from motorDriver import motor
+import TCPServer
+import configData_Pi
+import requestHandler
+import motorDriver 
 
 def main():
-    cfg = confDataPi("settings_pi.xml")
-    server = TCPServer(cfg)
-    request_hndl = requestHandle()
+    cfg = configData_Pi.confDataPi("settings_pi.xml")
+    server = TCPServer.TCPServer(cfg)
+    request_hndl = requestHandler.requestHandle()
+    motor = motorDriver.motor()
     con_client = False
     result = "none"
     
-    motor.GPIOInit() #Initialize the GPIO pins on the Raspberry
+    motor.GPIO_Init() #Initialize the GPIO pins on the Raspberry
     
     while(True):
         if con_client == False:
@@ -22,7 +23,7 @@ def main():
             print("Connected with %s:%s" %(cl_addr[0], cl_addr[1]))
             con_client = True
         request = server.receive() #Wait until you receive a request from the client
-        result = request_hndl.process(request) #Pass the received request to the request handler and get the response from the handler
+        result = request_hndl.process(request, cfg) #Pass the received request to the request handler and get the response from the handler
         server.sendResponse(result) #Send the response from the handler to the client
         
         if result == "Bye":
