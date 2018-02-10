@@ -24,4 +24,4 @@ class logData(object):
         elif level == "CRITICAL":
             self.logger.critical(msg)
         elif level == "EXCEPT":
-            self.logger.exception(msg)
+            self.logger.error(msg, exc_info = True)
