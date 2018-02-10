@@ -33,7 +33,7 @@ class motor(object):
         j = 0 #Initialize the indexing variable
         step = 0
         thr = threading.currentThread()
-        while getattr(thr, "run", True) and (step < steps):
+        while getattr(thr, "run", True) and (step <= steps):
             self.setStep(_steps[j][0], _steps[j][1], RA_motor)
             time.sleep(delay)
             j = j + 1
@@ -46,7 +46,7 @@ class motor(object):
         j = 0 #Initialize the indexing variable
         step = 0
         thr = threading.currentThread()
-        while getattr(thr, "run", True) and (step < steps):
+        while getattr(thr, "run", True) and (step <= steps):
             self.setStep(_steps[2 - j][0], _steps[2 - j][1], RA_motor)
             time.sleep(delay)
             j = j + 1

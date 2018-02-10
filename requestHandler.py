@@ -1,14 +1,15 @@
 import threading
 import motorDriver
+import logData_Pi
 
 _steps_from_zero = 0 #Number of steps from true south and home position
-num_of_stp_per_deg_ra = 100
-num_of_stp_per_deg_dec = 430
+num_of_stp_per_deg_ra = 100 #Enter the number of steps per degree for the RA motor
+num_of_stp_per_deg_dec = 430 #Enter the number of steps per degree for the DEC motor
 
 class requestHandle(object):
     def __init__(self):
         self.motor = motorDriver.motor()
-        #self.DECmotor = motor.DECmotor()
+        self.log_data = logData_Pi.logData(__name__)
     
     def process(self, request, cfg_data):
         response = "None"
@@ -49,19 +50,19 @@ class requestHandle(object):
                 #Get the current position of the dish from the magnetometer to use it later, before moving on
                 
                 #According to the sign of the mov_stps number decide at what direction to move, with negative indicating leftward direction
-                #Replace the 1 in the arguments with the wanted delay
+                #Replace the 1 in the arguments with the wanted delay and for the transit the speed is set to 200Hz or 0.005sec delay
                 if mov_stps_ra < 0:
                     ra_thr = threading.Thread(name = 'hourangle', target = self.motor.stepping_bckwd, args = (0.005, -mov_stps_ra, True))
                 else:
-                    ra_thr = threading.Thread(name = 'hourangle', target = self.motor.stepping_bckwd, args = (0.005, mov_stps_ra, True))
+                    ra_thr = threading.Thread(name = 'hourangle', target = self.motor.stepping_fwd, args = (0.005, mov_stps_ra, True))
                 
                 if mov_stps_dec < 0:
                     dec_thr = threading.Thread(name = 'declination', target = self.motor.stepping_bckwd, args = (0.005, -mov_stps_dec, False))
                 else:
-                    dec_thr = threading.Thread(name = 'declination', target = self.motor.stepping_bckwd, args = (0.005, mov_stps_dec, False))
+                    dec_thr = threading.Thread(name = 'declination', target = self.motor.stepping_fwd, args = (0.005, mov_stps_dec, False))
                 ra_thr.start() #Start the thread for driving
                 dec_thr.start() #Start the thread for driving
-                while(not getattr(ra_thr, "done", False) and not getattr(dec_thr, "done", False)): #Wait until both threads finish
+                while(not getattr(ra_thr, "done", False) or not getattr(dec_thr, "done", False)): #Wait until both threads finish
                     continue
                 #ra_thr.join() #Close the thread
                 #dec_thr.join() #Close the thread
@@ -70,11 +71,12 @@ class requestHandle(object):
                 
                 #Use the magnetometer to determine the current position and if the dish moved correctly before sending any message
                 #After checking the correctness of the position assign the correct message to the response variable
+                #Also if the dish moved successfully, update the position in the settings file
                 
                 #ra_thr.run = False #Stops the execution of the thread
                 #dec_thr.run = False #Stops the execution of the thread
                 
-                print("Received TRNST")
+                print("Received TRNST") #Used for debugging purposes
                 
             elif compon[0] == "AAF":
                 #Handle the aim and follow function
