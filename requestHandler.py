@@ -22,7 +22,8 @@ class requestHandle(object):
         elif request == "Quit":
             response == "Server closing"
         else:
-            compon = request.split("_")
+            self.log_data.log("INFO", "Received \'%s\' from client" %request)
+            compon = request.split("_") #Get the components of the string
             if compon[0] == "TRNST":
                 '''
                     #self.RAmotor
