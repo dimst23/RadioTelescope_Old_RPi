@@ -25,9 +25,12 @@ class TCPServer(object):
         try:
             self.client, claddr = self.sock.accept()
             self.client_connected = True
+        except KeyboardInterrupt:
+            self.log_data.log("WARNING", "User requested termination with keyboard interrupt")
+            exit(1)
         except:
             self.log_data.log("EXCEPT", "An exception occurred while waiting for a client to connect")
-            exit(1)
+            return "", False
         else:
             return claddr, self.client_connected
     

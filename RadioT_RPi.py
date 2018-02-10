@@ -43,6 +43,7 @@ def main():
             server.releaseClient()
             log_data.log("INFO", "Client %s:%s released after request" %(cl_addr[0], cl_addr[1]))
             log_data.log("INFO", "Server is terminating after client's request")
+            motor.clean_IO()
             exit(0)
 
 if __name__  == '__main__':

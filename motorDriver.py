@@ -21,6 +21,9 @@ class motor(object):
         GPIO.output(12, 0)
         GPIO.output(13, 0)
     
+    def clean_IO(self):
+        GPIO.cleanup()
+    
     def setStep(self, c1, c2, RA_motor):
         if RA_motor: #If RA_motor is True, then we are talking about the RA motor
             GPIO.output(7, c1)
