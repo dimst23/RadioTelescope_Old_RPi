@@ -3,8 +3,8 @@ import motorDriver
 import logData_Pi
 
 _steps_from_zero = 0 #Number of steps from true south and home position
-num_of_stp_per_deg_ra = 100 #Enter the number of steps per degree for the RA motor
-num_of_stp_per_deg_dec = 430 #Enter the number of steps per degree for the DEC motor
+num_of_stp_per_deg_ra = 100 #Enter the number of steps per degree for the RA motor (43200 steps/h or 2880 steps/deg)
+num_of_stp_per_deg_dec = 430 #Enter the number of steps per degree for the DEC motor (10000 steps/deg)
 
 class requestHandle(object):
     def __init__(self):
@@ -21,6 +21,9 @@ class requestHandle(object):
             response = "Bye"
         elif request == "Quit":
             response == "Server closing"
+        elif request == "Report Position"
+            #Add code to calculate and send the current position of the telescope to the client as requested
+            response = "Position of the dish"
         else:
             self.log_data.log("INFO", "Received \'%s\' from client" %request)
             compon = request.split("_") #Get the components of the string

@@ -32,12 +32,10 @@ def main():
             server.releaseClient()
             con_client = False
             log_data.log("INFO", "Client %s:%s released after request" %(cl_addr[0], cl_addr[1]))
-            continue
         elif result == "None":
             server.releaseClient()
             con_client = False
             log_data.log("WARNING", "Client %s:%s exited without notice" %(cl_addr[0], cl_addr[1]))
-            continue
         elif result == "Server closing":
             #Some more code needed to handle step count saving etc
             server.releaseClient()
