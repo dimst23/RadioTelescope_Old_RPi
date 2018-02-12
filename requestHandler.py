@@ -1,6 +1,6 @@
-import threading
 import motorDriver
 import logData_Pi
+import threading
 
 _steps_from_zero = 0 #Number of steps from true south and home position
 num_of_stp_per_deg_ra = 100 #Enter the number of steps per degree for the RA motor (43200 steps/h or 2880 steps/deg)
@@ -12,18 +12,21 @@ class requestHandle(object):
         self.log_data = logData_Pi.logData(__name__)
     
     def process(self, request, cfg_data):
-        response = "None"
+        response = "None" #Variable to hold the response to be sent
+        
         if (request == None) or (request == ""): #Check if the client is disconnected without any notice
             response = "None"
-        elif request == "Test":
+        elif request == "Test": #Respond to the connection testing command
             response = "OK"
-        elif request == "Terminate":
+        elif request == "Terminate": #Send the required response for the successful termination
             response = "Bye"
-        elif request == "Quit":
+        elif request == "Quit": #Send the 'Quit' response, which indicates server closing
             response == "Server closing"
-        elif request == "Report Position"
+        elif request == "Report Position" #Respond with the current position
             #Add code to calculate and send the current position of the telescope to the client as requested
-            response = "Position of the dish"
+            response = "POS_0_40" #RA_DEC
+        elif request == "TRKNGSTAT" #Send the tracking status of the telescope, whether is tracking or not
+            response = "NO" #Value until full functionality is provided
         else:
             self.log_data.log("INFO", "Received \'%s\' from client" %request)
             compon = request.split("_") #Get the components of the string
