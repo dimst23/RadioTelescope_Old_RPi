@@ -19,6 +19,7 @@ class requestHandle(object):
         elif request == "Test": #Respond to the connection testing command
             response = "OK"
         elif request == "Terminate": #Send the required response for the successful termination
+            self.log_data.log("INFO", "Client requested connection termination.")
             response = "Bye"
         elif request == "Quit": #Send the 'Quit' response, which indicates server closing
             response == "Server closing"
@@ -48,11 +49,12 @@ class requestHandle(object):
                 cur_stps = cfg_data.getSteps() #Get the current number of steps away from home position
                 cur_stp_ra = cur_stps[0] #Get the current RA steps
                 cur_stp_dec = cur_stps[1] #Get the current DEC steps
+                home_calib = cur_stps[2] #Get the current home position calibration value
                 
                 #If the current steps variable is already corrected for a possible offset of home position from the true south, 
-                #then remove the _steps_from_zero
-                mov_stps_ra = cur_stp_ra + ra_steps + _steps_from_zero #Number of steps to move the RA motor
-                mov_stps_dec = cur_stp_dec + dec_steps + _steps_from_zero #Number of steps to move the DEC motor
+                #then remove the home_calib
+                mov_stps_ra = cur_stp_ra + ra_steps + home_calib #Number of steps to move the RA motor
+                mov_stps_dec = cur_stp_dec + dec_steps + home_calib #Number of steps to move the DEC motor
                 
                 #Get the current position of the dish from the magnetometer to use it later, before moving on
                 
@@ -74,7 +76,10 @@ class requestHandle(object):
                 #ra_thr.join() #Close the thread
                 #dec_thr.join() #Close the thread
                 
+                #An If statement is needed for the short code below, which is gonna check for successful dish placement
                 response = "POSITION_SET" #Send the correct message as formated above
+                self.log_data.log("INFO", "Dish position successfully set and client was informed.")
+                cfg_data.setSteps((mov_stps_ra, mov_stps_dec)) #If everything is successful then save the current telescope position
                 
                 #Use the magnetometer to determine the current position and if the dish moved correctly before sending any message
                 #After checking the correctness of the position assign the correct message to the response variable
@@ -94,4 +99,8 @@ class requestHandle(object):
             elif compon[0] == "SKYSCN":
                 #Handle the sky scanning function
                 print("Received SKYSCN")
+            else:
+                print("Invalid command")
+                self.log_data.log("WARNING", "The command: %s, is not recognized as a valid server command, so no action taken." %request)
+                response = "The command: %s, is not recognized as a valid server command." %request
         return response

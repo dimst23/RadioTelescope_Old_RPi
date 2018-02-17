@@ -25,15 +25,14 @@ class TCPServer(object):
         try:
             self.client, claddr = self.sock.accept()
             self.client_connected = True
+            return claddr, self.client_connected
         except KeyboardInterrupt:
             self.log_data.log("WARNING", "User requested termination with keyboard interrupt")
             self.sock.close()
             exit(0)
         except:
             self.log_data.log("EXCEPT", "An exception occurred while waiting for a client to connect")
-            return "", False
-        else:
-            return claddr, self.client_connected
+            return "", False  
     
     def receive(self):
         if self.client_connected:

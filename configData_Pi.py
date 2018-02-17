@@ -1,19 +1,23 @@
 import xml.etree.ElementTree as etree
+import logData_Pi
 import os
 
 class confDataPi(object):
     #Class constructor
     def __init__(self, filename):
+        self.logdt = logData_Pi.logData(__name__)
         self.filename = filename #Create a variable with the given filename
         self.parse() #Parse the XML file
     
     def parse(self):
-        #Add a handling code for the case parsing fails
-        self.tree = etree.parse(self.filename)
-        self.root = self.tree.getroot()
+        try:
+            self.tree = etree.parse(self.filename)
+            self.root = self.tree.getroot()
+        except:
+            self.log_data.log("EXCEPT", "An exception occurred trying parse the XML settings file. See the traceback below.")
+            exit(1) #Exit the program since the settings file is important
         
     def getConfig(self, child, subchild):
-        #self.parse()
         children = list(self.root.find(child))
         for item in children:
             if item.tag == subchild:
@@ -27,21 +31,26 @@ class confDataPi(object):
         for item in children:
             if item.tag == child:
                 item.text = value
-                elm.set("updated", "yes")
+                #elm.set("updated", "yes")
                 self.tree.write(self.filename)
                 break
             else:
                 continue
     
     def getSteps(self):
-        return [float(self.getConfig("Steps", "RA")), float(self.getConfig("Steps", "DEC"))]
+        elm = self.root.find("Steps")
+        return [float(self.getConfig("Steps", "RA")), float(self.getConfig("Steps", "DEC")), elm.get("home_calib")]
         
-    def setSteps(self, m_steps):
+    def setSteps(self, m_steps, calib = ""):
         self.setConfig("Steps", "RA", float(m_steps[0]))
         self.setConfig("Steps", "DEC", float(m_steps[1]))
+        if calib != "":
+            elm = self.root.find("Steps")
+            elm.set("home_calib", str(calib))
     
     def getPort(self):
         return self.getConfig("TCP", "port")
         
     def setPort(self, port):
         self.setConfig("TCP", "port", str(port))
+    
