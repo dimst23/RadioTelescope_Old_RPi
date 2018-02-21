@@ -30,7 +30,7 @@ class confDataPi(object):
         children = list(elm) #List the children of the element
         for item in children:
             if item.tag == child:
-                item.text = value
+                item.text = str(value) #Make the value into a string before appending it on the settings file
                 #elm.set("updated", "yes")
                 self.tree.write(self.filename)
                 break
