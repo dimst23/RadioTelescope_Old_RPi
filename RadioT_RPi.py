@@ -20,12 +20,23 @@ def main():
     
     while(True):
         if con_client == False:
+            log_data.log("INFO", "Waiting for connection")
             cl_addr, con_client = server.acceptConnection()
             log_data.log("INFO", "Connection request accepted")
             log_data.log("INFO", "Connected with %s:%s" %(cl_addr[0], cl_addr[1]))
-        request = server.receive() #Wait until you receive a request from the client
-        result = request_hndl.process(request, cfg) #Pass the received request to the request handler and get the response from the handler
-        server.sendResponse(result) #Send the response from the handler to the client
+        
+        try:
+            request = server.receive() #Wait until you receive a request from the client
+            result = request_hndl.process(request, cfg) #Pass the received request to the request handler and get the response from the handler
+            server.sendResponse(result) #Send the response from the handler to the client
+        except KeyboardInterrupt:
+            log_data.log("WARNING", "Keyboard interrupt sent, exiting as requested.")
+            server.releaseClient() #Release any open connections
+            exit(0) #Stop the program
+        except:
+            log_data.log("EXCEPT", "There was a major problem and we now exiting. See the traceback below.")
+            server.releaseClient() #Release any open connections
+            exit(1) #Stop the program
         
         if result == "Bye":
             #Some more code needed to handle step count saving etc
