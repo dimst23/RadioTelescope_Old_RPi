@@ -6,7 +6,7 @@ class TCPServer(object):
         self.client_connected = False
         self.port = cfg.getPort() #Get the server port from the settings file
         self.sock = self.createSocket()
-        self.log_data = logData_Pi.logData(__name__)
+        self.log_data = logData_Pi.logData(__name__) #Create the necessary logger
     
     def createSocket(self):
         #Get hostname of the current machine
@@ -14,8 +14,7 @@ class TCPServer(object):
         sck.connect( ("8.8.8.8", 80) )
         hostname = sck.getsockname()[0] #Get the local IP returned
         sck.close() #Release the socket created for getting the local IP
-        #hostname = socket.gethostname() #Get the hostname of the machine
-        #hostname = "192.168.2.10"
+        
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #Create a socket
         sock.bind((hostname, int(self.port))) #Bind to the socket
         sock.listen(1) #Set the listening to one connection
@@ -29,9 +28,10 @@ class TCPServer(object):
         except KeyboardInterrupt:
             self.log_data.log("WARNING", "User requested termination with keyboard interrupt")
             self.sock.close()
-            exit(0)
+            pass
         except:
             self.log_data.log("EXCEPT", "An exception occurred while waiting for a client to connect")
+            self.sock.close()
             return "", False  
     
     def receive(self):
