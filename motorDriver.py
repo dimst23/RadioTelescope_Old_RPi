@@ -2,7 +2,8 @@ import RPi.GPIO as GPIO
 import threading
 import time
 
-_steps = [[1, 0], [1, 1], [0, 1]]
+_steps_half = [[1, 0], [1, 1], [0, 1]]
+_steps_full = [[1, 0], [0, 1]]
 
 class motor(object):
     def GPIO_Init(self):
@@ -32,28 +33,44 @@ class motor(object):
             GPIO.output(12, c1)
             GPIO.output(13, c2)
     
-    def stepping_fwd(self, delay, steps, RA_motor):
+    def stepping_fwd(self, delay, steps, RA_motor, stp_full = False):
         j = 0 #Initialize the indexing variable
         step = 0
         thr = threading.currentThread()
-        while getattr(thr, "run", True) and (step <= steps):
-            self.setStep(_steps[j][0], _steps[j][1], RA_motor)
-            time.sleep(delay)
-            j = j + 1
-            step = step + 1
-            j = 0 if j == 3 else j
+        if stp_full: #If full stepping is selected then do the following
+            while getattr(thr, "run", True) and (step <= steps):
+                self.setStep(_steps_half[j][0], _steps_half[j][1], RA_motor)
+                time.sleep(delay)
+                j = j + 1
+                step = step + 1
+                j = 0 if j == 2 else j
+        else:
+            while getattr(thr, "run", True) and (step <= steps):
+                self.setStep(_steps_half[j][0], _steps_half[j][1], RA_motor)
+                time.sleep(delay)
+                j = j + 1
+                step = step + 1
+                j = 0 if j == 3 else j
         thr.done = True #Indicate when we are done
         return True
     
-    def stepping_bckwd(self, delay, steps, RA_motor):
+    def stepping_bckwd(self, delay, steps, RA_motor, stp_full = False):
         j = 0 #Initialize the indexing variable
         step = 0
         thr = threading.currentThread()
-        while getattr(thr, "run", True) and (step <= steps):
-            self.setStep(_steps[2 - j][0], _steps[2 - j][1], RA_motor)
-            time.sleep(delay)
-            j = j + 1
-            step = step + 1
-            j = 0 if j == 3 else j
+        if stp_full:
+            while getattr(thr, "run", True) and (step <= steps):
+                self.setStep(_steps_full[1 - j][0], _steps_full[1 - j][1], RA_motor)
+                time.sleep(delay)
+                j = j + 1
+                step = step + 1
+                j = 0 if j == 2 else j
+        else:
+            while getattr(thr, "run", True) and (step <= steps):
+                self.setStep(_steps_half[2 - j][0], _steps_half[2 - j][1], RA_motor)
+                time.sleep(delay)
+                j = j + 1
+                step = step + 1
+                j = 0 if j == 3 else j
         thr.done = True #Indicate when we are done
         return True
