@@ -10,7 +10,7 @@ import logData_Pi
 def main():
     cfg = configData_Pi.confDataPi("settings_pi.xml")
     server = TCPServer.TCPServer(cfg)
-    request_hndl = requestHandler.requestHandle()
+    request_hndl = requestHandler.requestHandle(cfg)
     log_data = logData_Pi.logData(__name__)
     motor = motorDriver.motor()
     con_client = False
@@ -27,7 +27,7 @@ def main():
         
         try:
             request = server.receive() #Wait until you receive a request from the client
-            result = request_hndl.process(request, cfg) #Pass the received request to the request handler and get the response from the handler
+            result = request_hndl.process(request) #Pass the received request to the request handler and get the response from the handler
             server.sendResponse(result) #Send the response from the handler to the client
         except KeyboardInterrupt:
             log_data.log("WARNING", "Keyboard interrupt sent, exiting as requested.")

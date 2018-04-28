@@ -7,11 +7,12 @@ num_of_stp_per_deg_ra = 100 #Enter the number of steps per degree for the RA mot
 num_of_stp_per_deg_dec = 430 #Enter the number of steps per degree for the DEC motor (10000 steps/deg)
 
 class requestHandle(object):
-    def __init__(self):
+    def __init__(self, cfg_data):
         self.motor = motorDriver.motor()
         self.log_data = logData_Pi.logData(__name__)
+        self.cfg_data = cfg_data
     
-    def process(self, request, cfg_data):
+    def process(self, request):
         response = "None" #Variable to hold the response to be sent
         
         if (request == None) or (request == ""): #Check if the client is disconnected without any notice
@@ -48,7 +49,7 @@ class requestHandle(object):
                 ra_steps = float(compon[2])*num_of_stp_per_deg_ra #Number of RA steps from home position
                 dec_steps = float(compon[4])*num_of_stp_per_deg_dec #Number of DEC steps from home position
                 
-                cur_stps = cfg_data.getSteps() #Get the current number of steps away from home position
+                cur_stps = self.cfg_data.getSteps() #Get the current number of steps away from home position
                 cur_stp_ra = cur_stps[0] #Get the current RA steps
                 cur_stp_dec = cur_stps[1] #Get the current DEC steps
                 home_calib = cur_stps[2] #Get the current home position calibration value
@@ -82,7 +83,7 @@ class requestHandle(object):
                 #An If statement is needed for the short code below, which is gonna check for successful dish placement
                 response = "POSITION_SET" #Send the correct message as formated above
                 self.log_data.log("INFO", "Dish position successfully set and client was informed.")
-                #cfg_data.setSteps((mov_stps_ra, mov_stps_dec)) #If everything is successful then save the current telescope position
+                #self.cfg_data.setSteps((mov_stps_ra, mov_stps_dec)) #If everything is successful then save the current telescope position
                 
                 #Use the magnetometer to determine the current position and if the dish moved correctly before sending any message
                 #After checking the correctness of the position assign the correct message to the response variable
